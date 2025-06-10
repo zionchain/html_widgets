@@ -270,95 +270,108 @@
                     <!-- Legend for the donut chart showing campaign budget breakdown -->
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                 <table class="w-full text-left">
-                    <!-- Part 1: Total Available Funds -->
-                    <thead class="bg-gray-800/50">
-                        <tr>
-                            <th class="p-4 font-semibold text-white text-lg" colspan="3">Total Available Funds</th>
-                        </tr>
-                        <tr class="border-b-2 border-gray-700">
-                            <th class="p-3 text-left font-normal text-gray-400">Token Source</th>
-                            <th class="p-3 text-right font-normal text-gray-400">Allocation ($DNOW)</th>
-                            <th class="p-3 text-right font-normal text-gray-400">Allocation ($USD)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border-gray-700">
-                            <td class="p-3">Liquidity, Rewards & Marketing</td>
-                            <td class="p-3 text-right font-mono">250,000,000</td>
-                            <td class="p-3 text-right font-mono">$450,000</td>
-                        </tr>
-                        <tr class="border-b border-gray-700">
-                            <td class="p-3">Airdrop Allocation</td>
-                            <td class="p-3 text-right font-mono">100,000,000</td>
-                            <td class="p-3 text-right font-mono">$180,000</td>
-                        </tr>
-                         <tr class="border-b-2 border-gray-600">
-                            <td class="p-3">Initial Strategic Reserve</td>
-                            <td class="p-3 text-right font-mono">92,180,000</td>
-                            <td class="p-3 text-right font-mono">$165,924</td>
-                        </tr>
-                        <tr class="bg-gray-900/50">
-                            <td class="p-4 font-bold">Total Available</td>
-                            <td class="p-4 text-right font-bold font-mono">442,180,000</td>
-                            <td class="p-4 text-right font-bold font-mono">$795,924</td>
-                        </tr>
-                    </tbody>
-            
-                    <!-- Spacer Row -->
-                    <tr><td colspan="3" class="p-4"></td></tr>
-            
-                    <!-- Part 2: Total Campaign Budget -->
-                    <thead class="bg-gray-800/50">
-                        <tr>
-                            <th class="p-4 font-semibold text-white text-lg" colspan="3">Campaign Budget Utilization</th>
-                        </tr>
-                         <tr class="border-b-2 border-gray-700">
-                            <th class="p-3 text-left font-normal text-gray-400">Campaign Segment</th>
-                            <th class="p-3 text-right font-normal text-gray-400">Required ($DNOW)</th>
-                            <th class="p-3 text-right font-normal text-gray-400">Required ($USD)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border-gray-700">
-                            <td class="p-3">🏆 Bracket Rewards</td>
-                             <td class="p-3 text-right font-mono">222,222,222</td>
-                            <td class="p-3 text-right font-mono">$400,000</td>
-                        </tr>
-                         <tr class="border-b border-gray-700">
-                            <td class="p-3">🤝 Referral Bonuses</td>
-                            <td class="p-3 text-right font-mono">55,555,556</td>
-                            <td class="p-3 text-right font-mono">$100,000</td>
-                        </tr>
-                        <tr class="border-b-2 border-gray-600">
-                            <td class="p-3">🗓️ F2P Pick'em Rewards</td>
-                            <td class="p-3 text-right font-mono">132,000,000</td>
-                            <td class="p-3 text-right font-mono">$237,600</td>
-                        </tr>
-                         <tr class="bg-gray-900/50">
-                            <td class="p-4 font-bold">Total Utilized</td>
-                            <td class="p-4 text-right font-bold font-mono">409,777,778</td>
-                            <td class="p-4 text-right font-bold font-mono">$737,600</td>
-                        </tr>
-                    </tbody>
-            
-                    <!-- Part 3: Remaining Reserve -->
-                     <thead class="bg-green-500/20 mt-4">
-                         <tr>
-                            <th class="p-4 font-semibold text-green-300 text-lg" colspan="3">Post-Campaign Remaining Funds</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-green-500/10">
-                        <tr>
-                            <td class="p-4 font-bold text-white">Remaining Strategic Reserve</td>
-                            <td class="p-4 text-right font-bold font-mono text-green-300">32,402,222</td>
-                            <td class="p-4 text-right font-bold font-mono text-green-300">$58,324</td>
-                        </tr>
-                    </tbody>
-                </table>
-                 <p class="text-xs text-gray-500 text-center mt-4">*Note: All USD values are calculated based on a $DNOW price of $0.0018.</p>
+            <div class="relative">
+                <div id="tokenomics-table-container" class="overflow-x-auto">
+                     <table class="w-full text-left" style="min-width: 600px;">
+                        <!-- Part 1: Total Available Funds -->
+                        <thead class="bg-gray-800/50">
+                            <tr>
+                                <th class="p-4 font-semibold text-white text-lg" colspan="3">Total Available Funds</th>
+                            </tr>
+                            <tr class="border-b-2 border-gray-700">
+                                <th class="p-3 text-left font-normal text-gray-400">Token Source</th>
+                                <th class="p-3 text-right font-normal text-gray-400">Allocation ($DNOW)</th>
+                                <th class="p-3 text-right font-normal text-gray-400">Allocation ($USD)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-700">
+                                <td class="p-3">Liquidity, Rewards & Marketing</td>
+                                <td class="p-3 text-right font-mono">250,000,000</td>
+                                <td class="p-3 text-right font-mono">$450,000</td>
+                            </tr>
+                            <tr class="border-b border-gray-700">
+                                <td class="p-3">Airdrop Allocation</td>
+                                <td class="p-3 text-right font-mono">100,000,000</td>
+                                <td class="p-3 text-right font-mono">$180,000</td>
+                            </tr>
+                             <tr class="border-b-2 border-gray-600">
+                                <td class="p-3">Initial Strategic Reserve</td>
+                                <td class="p-3 text-right font-mono">92,180,000</td>
+                                <td class="p-3 text-right font-mono">$165,924</td>
+                            </tr>
+                            <tr class="bg-gray-900/50">
+                                <td class="p-4 font-bold">Total Available</td>
+                                <td class="p-4 text-right font-bold font-mono">442,180,000</td>
+                                <td class="p-4 text-right font-bold font-mono">$795,924</td>
+                            </tr>
+                        </tbody>
+                
+                        <!-- Spacer Row -->
+                        <tr><td colspan="3" class="p-4"></td></tr>
+                
+                        <!-- Part 2: Total Campaign Budget -->
+                        <thead class="bg-gray-800/50">
+                            <tr>
+                                <th class="p-4 font-semibold text-white text-lg" colspan="3">Campaign Budget Utilization</th>
+                            </tr>
+                             <tr class="border-b-2 border-gray-700">
+                                <th class="p-3 text-left font-normal text-gray-400">Campaign Segment</th>
+                                <th class="p-3 text-right font-normal text-gray-400">Required ($DNOW)</th>
+                                <th class="p-3 text-right font-normal text-gray-400">Required ($USD)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-700">
+                                <td class="p-3">🏆 Bracket Rewards</td>
+                                 <td class="p-3 text-right font-mono">222,222,222</td>
+                                <td class="p-3 text-right font-mono">$400,000</td>
+                            </tr>
+                             <tr class="border-b border-gray-700">
+                                <td class="p-3">🤝 Referral Bonuses</td>
+                                <td class="p-3 text-right font-mono">55,555,556</td>
+                                <td class="p-3 text-right font-mono">$100,000</td>
+                            </tr>
+                            <tr class="border-b-2 border-gray-600">
+                                <td class="p-3">🗓️ F2P Pick'em Rewards</td>
+                                <td class="p-3 text-right font-mono">132,000,000</td>
+                                <td class="p-3 text-right font-mono">$237,600</td>
+                            </tr>
+                             <tr class="bg-gray-900/50">
+                                <td class="p-4 font-bold">Total Utilized</td>
+                                <td class="p-4 text-right font-bold font-mono">409,777,778</td>
+                                <td class="p-4 text-right font-bold font-mono">$737,600</td>
+                            </tr>
+                        </tbody>
+                
+                        <!-- Part 3: Remaining Reserve -->
+                         <thead class="bg-green-500/20 mt-4">
+                             <tr>
+                                <th class="p-4 font-semibold text-green-300 text-lg" colspan="3">Post-Campaign Remaining Funds</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-green-500/10">
+                            <tr>
+                                <td class="p-4 font-bold text-white">Remaining Strategic Reserve</td>
+                                <td class="p-4 text-right font-bold font-mono text-green-300">32,402,222</td>
+                                <td class="p-4 text-right font-bold font-mono text-green-300">$58,324</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Scroll Buttons -->
+                <div class="absolute inset-y-0 left-0 flex items-center md:hidden">
+                    <button id="scroll-left-btn" class="bg-gray-700/50 p-2 rounded-full text-white hidden">
+                        &lt;
+                    </button>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center md:hidden">
+                    <button id="scroll-right-btn" class="bg-gray-700/50 p-2 rounded-full text-white">
+                        &gt;
+                    </button>
+                </div>
              </div>
+             <p class="text-xs text-gray-500 text-center mt-4">*Note: All USD values are calculated based on a $DNOW price of $0.0018.</p>
         </div>
     </section>
 
@@ -421,173 +434,220 @@
 </div>
 
 <script>
-    const roadmapData = [
-        { timeline: 'Aug 2025', objective: 'Launch Campaign Football (NFL, NCAA)', action: 'Announce Bracket & Pick’em challenges, promote on X, open entries.', impact: 'Low' },
-        { timeline: 'Nov 2025', objective: 'Finalize Participants NCAA Football', action: 'Close Bracket Challenge, verify token holdings.', impact: 'Low' },
-        { timeline: 'Dec 2025', objective: 'Finalize Participants NFL', action: 'Close Bracket Challenge, verify token holdings.', impact: 'Low' },
-        { timeline: 'Dec 2025-Jan 2026', objective: 'Engage in Picks Phase NFL & NCAA', action: 'Open picks for brackets, run weekly pick’ems, ensure eligibility.', impact: 'Low' },
-        { timeline: 'Dec 2025', objective: 'Launch March Madness Campaign', action: 'Launch basketball MM campaign, adjust based on feedback, promote heavily.', impact: 'Moderate' },
-        { timeline: 'Jan-Feb 2026', objective: 'Resolve NCAA Football & Payout', action: 'Distribute prizes, share results on X, gather feedback.', impact: 'Moderate' },
-        { timeline: 'Jan 2026', objective: 'Launch NBA Playoffs Campaign', action: 'Launch NBA campaign, promote heavily.', impact: 'Moderate' },
-        { timeline: 'Feb 2026', objective: 'Finalize Participants NCAA March Madness', action: 'Close Bracket Challenge, verify token holdings.', impact: 'Low' },
-        { timeline: 'Feb-Mar 2026', objective: 'Engage in Picks Phase NCAA MM', action: 'Open picks for March Madness, run weekly pick’ems.', impact: 'Low' },
-        { timeline: 'Feb-Mar 2026', objective: 'Resolve NFL & Payout', action: 'Distribute prizes, share results on X, gather feedback.', impact: 'Moderate' },
-        { timeline: 'Mar 2026', objective: 'Finalize Participants NBA', action: 'Close Bracket Challenge, verify token holdings.', impact: 'Low' },
-        { timeline: 'Mar-Apr 2026', objective: 'Engage in Picks Phase NBA', action: 'Open picks for NBA Bracket, run weekly pick’ems.', impact: 'Low' },
-        { timeline: 'Apr-May 2026', objective: 'Resolve March-Madness & Payout', action: 'Distribute prizes, share results on X, gather feedback.', impact: 'Moderate' },
-        { timeline: 'May-Jun 2026', objective: 'Resolve NBA & Payout', action: 'Distribute prizes, share results on X, gather feedback.', impact: 'Moderate' },
-        { timeline: 'Jun 2026', objective: 'Prep for 2027 season', action: 'If 2026 season proved viable, repeat process.', impact: 'No Change' }
-    ];
+    document.addEventListener('DOMContentLoaded', () => {
+        const roadmapData = [
+            { timeline: 'Aug 2025', objective: 'Launch Campaign Football (NFL, NCAA)', action: 'Announce Bracket & Pick’em challenges, promote on X, open entries.', impact: 'Low' },
+            { timeline: 'Nov 2025', objective: 'Finalize Participants NCAA Football', action: 'Close Bracket Challenge, verify token holdings.', impact: 'Low' },
+            { timeline: 'Dec 2025', objective: 'Finalize Participants NFL', action: 'Close Bracket Challenge, verify token holdings.', impact: 'Low' },
+            { timeline: 'Dec 2025-Jan 2026', objective: 'Engage in Picks Phase NFL & NCAA', action: 'Open picks for brackets, run weekly pick’ems, ensure eligibility.', impact: 'Low' },
+            { timeline: 'Dec 2025', objective: 'Launch March Madness Campaign', action: 'Launch basketball MM campaign, adjust based on feedback, promote heavily.', impact: 'Moderate' },
+            { timeline: 'Jan-Feb 2026', objective: 'Resolve NCAA Football & Payout', action: 'Distribute prizes, share results on X, gather feedback.', impact: 'Moderate' },
+            { timeline: 'Jan 2026', objective: 'Launch NBA Playoffs Campaign', action: 'Launch NBA campaign, promote heavily.', impact: 'Moderate' },
+            { timeline: 'Feb 2026', objective: 'Finalize Participants NCAA March Madness', action: 'Close Bracket Challenge, verify token holdings.', impact: 'Low' },
+            { timeline: 'Feb-Mar 2026', objective: 'Engage in Picks Phase NCAA MM', action: 'Open picks for March Madness, run weekly pick’ems.', impact: 'Low' },
+            { timeline: 'Feb-Mar 2026', objective: 'Resolve NFL & Payout', action: 'Distribute prizes, share results on X, gather feedback.', impact: 'Moderate' },
+            { timeline: 'Mar 2026', objective: 'Finalize Participants NBA', action: 'Close Bracket Challenge, verify token holdings.', impact: 'Low' },
+            { timeline: 'Mar-Apr 2026', objective: 'Engage in Picks Phase NBA', action: 'Open picks for NBA Bracket, run weekly pick’ems.', impact: 'Low' },
+            { timeline: 'Apr-May 2026', objective: 'Resolve March-Madness & Payout', action: 'Distribute prizes, share results on X, gather feedback.', impact: 'Moderate' },
+            { timeline: 'May-Jun 2026', objective: 'Resolve NBA & Payout', action: 'Distribute prizes, share results on X, gather feedback.', impact: 'Moderate' },
+            { timeline: 'Jun 2026', objective: 'Prep for 2027 season', action: 'If 2026 season proved viable, repeat process.', impact: 'No Change' }
+        ];
 
-    const roadmapContainer = document.getElementById('roadmap-container');
-    roadmapData.forEach((item, index) => {
-        const sideClass = index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse';
-        const itemHtml = `
-            <div class="relative flex items-center ${sideClass}">
-                <div class="hidden md:block w-5/12"></div>
-                <div class="relative z-10 bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center">
-                    <div class="w-4 h-4 bg-red-500 rounded-full"></div>
-                </div>
-                <div class="w-full md:w-5/12 card">
-                    <p class="text-sm font-bold primary-accent">${item.timeline}</p>
-                    <h4 class="font-bold text-white mt-1">${item.objective}</h4>
-                    <p class="text-sm text-gray-400 mt-2">${item.action}</p>
-                    <p class="text-xs text-gray-500 mt-3">Budget Impact: ${item.impact}</p>
-                </div>
-            </div>
-        `;
-        roadmapContainer.innerHTML += itemHtml;
-    });
-
-
-    Chart.register(ChartDataLabels);
-    // Chart.js implementation for Fund Allocation
-    const allocationCtx = document.getElementById('fundAllocationChart');
-    const tokenomicsData = {
-        labels: ['Bracket Rewards', 'F2P Pick\'em Rewards', 'Referral Bonuses'],
-        data: [222222222, 132000000, 55555556],
-        colors: ['#F73636', '#B71C1C', '#D32F2F']
-    };
-
-    if (allocationCtx) {
-        new Chart(allocationCtx.getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: tokenomicsData.labels,
-                datasets: [{
-                    label: 'Campaign Budget ($DNOW)',
-                    data: tokenomicsData.data,
-                    backgroundColor: tokenomicsData.colors,
-                    borderColor: '#161B22',
-                    borderWidth: 5,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '60%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                         callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) { label += ': '; }
-                                if (context.parsed !== null) {
-                                    label += new Intl.NumberFormat('en-US').format(context.parsed) + ' $DNOW';
-                                }
-                                return label;
-                            }
-                        }
-                    },
-                    datalabels: { display: false }
-                }
-            }
-        });
-
-        // Generate Legend
-        const legendContainer = document.getElementById('tokenomics-legend');
-        let legendHtml = '';
-        const totalBudgetedDnow = tokenomicsData.data.reduce((a, b) => a + b, 0);
-
-        tokenomicsData.labels.forEach((label, i) => {
-            const percentage = ((tokenomicsData.data[i] / totalBudgetedDnow) * 100).toFixed(1);
-            legendHtml += `
-                <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                    <div class="flex items-center">
-                        <div class="w-4 h-4 rounded-full mr-3" style="background-color: ${tokenomicsData.colors[i]}"></div>
-                        <span class="font-semibold text-white">${label}</span>
+        const roadmapContainer = document.getElementById('roadmap-container');
+        if(roadmapContainer) {
+            roadmapData.forEach((item, index) => {
+                const sideClass = index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse';
+                const itemHtml = `
+                    <div class="relative flex items-center ${sideClass}">
+                        <div class="hidden md:block w-5/12"></div>
+                        <div class="relative z-10 bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center">
+                            <div class="w-4 h-4 bg-red-500 rounded-full"></div>
+                        </div>
+                        <div class="w-full md:w-5/12 card">
+                            <p class="text-sm font-bold primary-accent">${item.timeline}</p>
+                            <h4 class="font-bold text-white mt-1">${item.objective}</h4>
+                            <p class="text-sm text-gray-400 mt-2">${item.action}</p>
+                            <p class="text-xs text-gray-500 mt-3">Budget Impact: ${item.impact}</p>
+                        </div>
                     </div>
-                    <span class="font-mono text-gray-300">${percentage}%</span>
-                </div>
-            `;
-        });
-        legendContainer.innerHTML = legendHtml;
-    }
+                `;
+                roadmapContainer.innerHTML += itemHtml;
+            });
+        }
 
-    // Chart.js implementation for TVL vs Price
-    const tvlCtx = document.getElementById('tvlPriceChart');
-    if (tvlCtx) {
-        new Chart(tvlCtx.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: ["August 2025", "September 2025", "October 2025", "November 2025", "December 2025", "January 2026"],
-                datasets: [{
-                    label: "TVL ($DNOW)",
-                    data: [20500000, 41000000, 61500000, 82000000, 102500000, 102500000],
-                    borderColor: "#4CAF50",
-                    backgroundColor: "rgba(76, 175, 80, 0.2)",
-                    yAxisID: "y-tvl",
-                    fill: true,
-                    tension: 0.4
-                }, {
-                    label: "Price ($USD)",
-                    data: [0.0014, 0.00168, 0.00196, 0.00224, 0.00252, 0.0028],
-                    borderColor: "#F73636",
-                    backgroundColor: "rgba(247, 54, 54, 0.2)",
-                    yAxisID: "y-price",
-                    fill: false,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
+
+        Chart.register(ChartDataLabels);
+        // Chart.js implementation for Fund Allocation
+        const allocationCtx = document.getElementById('fundAllocationChart');
+        const tokenomicsData = {
+            labels: ['Bracket Rewards', 'F2P Pick\'em Rewards', 'Referral Bonuses'],
+            data: [222222222, 132000000, 55555556],
+            colors: ['#F73636', '#B71C1C', '#D32F2F']
+        };
+
+        if (allocationCtx) {
+            new Chart(allocationCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: tokenomicsData.labels,
+                    datasets: [{
+                        label: 'Campaign Budget ($DNOW)',
+                        data: tokenomicsData.data,
+                        backgroundColor: tokenomicsData.colors,
+                        borderColor: '#161B22',
+                        borderWidth: 5,
+                    }]
                 },
-                scales: {
-                    x: {
-                        title: { display: true, text: 'Month' },
-                        grid: { color: '#30363d' }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed !== null) {
+                                        label += new Intl.NumberFormat('en-US').format(context.parsed) + ' $DNOW';
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        datalabels: { display: false }
+                    }
+                }
+            });
+
+            // Generate Legend
+            const legendContainer = document.getElementById('tokenomics-legend');
+            let legendHtml = '';
+            const totalBudgetedDnow = tokenomicsData.data.reduce((a, b) => a + b, 0);
+
+            tokenomicsData.labels.forEach((label, i) => {
+                const percentage = ((tokenomicsData.data[i] / totalBudgetedDnow) * 100).toFixed(1);
+                legendHtml += `
+                    <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded-full mr-3" style="background-color: ${tokenomicsData.colors[i]}"></div>
+                            <span class="font-semibold text-white">${label}</span>
+                        </div>
+                        <span class="font-mono text-gray-300">${percentage}%</span>
+                    </div>
+                `;
+            });
+            legendContainer.innerHTML = legendHtml;
+        }
+
+        // Chart.js implementation for TVL vs Price
+        const tvlCtx = document.getElementById('tvlPriceChart');
+        if (tvlCtx) {
+            new Chart(tvlCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ["August 2025", "September 2025", "October 2025", "November 2025", "December 2025", "January 2026"],
+                    datasets: [{
+                        label: "TVL ($DNOW)",
+                        data: [20500000, 41000000, 61500000, 82000000, 102500000, 102500000],
+                        borderColor: "#4CAF50",
+                        backgroundColor: "rgba(76, 175, 80, 0.2)",
+                        yAxisID: "y-tvl",
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: "Price ($USD)",
+                        data: [0.0014, 0.00168, 0.00196, 0.00224, 0.00252, 0.0028],
+                        borderColor: "#F73636",
+                        backgroundColor: "rgba(247, 54, 54, 0.2)",
+                        yAxisID: "y-price",
+                        fill: false,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
                     },
-                    "y-tvl": {
-                        type: 'linear',
-                        position: 'left',
-                        title: { display: true, text: 'TVL ($DNOW)' },
-                        grid: { color: '#30363d' },
-                        ticks: {
-                            callback: function(value) { return (value / 1e6) + 'M'; }
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Month' },
+                            grid: { color: '#30363d' }
+                        },
+                        "y-tvl": {
+                            type: 'linear',
+                            position: 'left',
+                            title: { display: true, text: 'TVL ($DNOW)' },
+                            grid: { color: '#30363d' },
+                            ticks: {
+                                callback: function(value) { return (value / 1e6) + 'M'; }
+                            }
+                        },
+                        "y-price": {
+                            type: 'linear',
+                            position: 'right',
+                            title: { display: true, text: 'Price (USD)'},
+                            grid: { drawOnChartArea: false },
+                            suggestedMin: 0.001,
+                            suggestedMax: 0.003
                         }
                     },
-                    "y-price": {
-                        type: 'linear',
-                        position: 'right',
-                        title: { display: true, text: 'Price (USD)'},
-                        grid: { drawOnChartArea: false },
-                        suggestedMin: 0.001,
-                        suggestedMax: 0.003
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
                     }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
                 }
-            }
-        });
-    }
+            });
+        }
+
+        // Mobile Table Scroll Logic
+        const tableContainer = document.getElementById('tokenomics-table-container');
+        const scrollLeftBtn = document.getElementById('scroll-left-btn');
+        const scrollRightBtn = document.getElementById('scroll-right-btn');
+
+        if (tableContainer && scrollLeftBtn && scrollRightBtn) {
+            const checkScroll = () => {
+                const { scrollLeft, scrollWidth, clientWidth } = tableContainer;
+                // A small tolerance to account for subpixel rendering
+                const tolerance = 2; 
+
+                if (scrollLeft > 0) {
+                    scrollLeftBtn.classList.remove('hidden');
+                } else {
+                    scrollLeftBtn.classList.add('hidden');
+                }
+
+                if (scrollLeft < scrollWidth - clientWidth - tolerance) {
+                    scrollRightBtn.classList.remove('hidden');
+                } else {
+                    scrollRightBtn.classList.add('hidden');
+                }
+            };
+
+            scrollRightBtn.addEventListener('click', () => {
+                tableContainer.scroll({
+                    left: tableContainer.scrollWidth,
+                    behavior: 'smooth'
+                });
+            });
+
+            scrollLeftBtn.addEventListener('click', () => {
+                tableContainer.scroll({
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            tableContainer.addEventListener('scroll', checkScroll);
+            window.addEventListener('resize', checkScroll); // Re-check on resize
+            checkScroll(); // Initial check
+        }
+    });
 </script>
 
 </body>
