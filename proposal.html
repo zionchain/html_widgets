@@ -32,7 +32,7 @@
         }
         h1 {
             font-weight: 900;
-            font-size: 3rem;
+            font-size: 2.5rem;
             line-height: 1.1;
         }
         h2 {
@@ -50,15 +50,39 @@
         Chart.defaults.color = '#E6EDF3';
         Chart.defaults.borderColor = '#30363d';
         Chart.defaults.font.family = "'Inter', 'sans-serif'";
+
+        /* Logo rotation animation */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .logo-spin {
+            animation: spin 4s linear infinite;
+        }
+
+        /* Neon effect for subtitle */
+        .neon-text {
+            font-weight: 600;
+            color: #fff;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #F73636,
+                0 0 15px #F73636,
+                0 0 20px #F73636;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header class="text-center my-12">
-        <img src="https://duelnow.com/assets/images/website/token/poster.jpg" alt="DuelNow Logo" class="h-24 w-24 mb-6 mx-auto rounded-full shadow-lg object-cover">
-        <h1 class="max-w-4xl mx-auto">DuelNow's Playbook: Campaign Strategy & Tokenomics</h1>
-        <p class="text-lg text-gray-400 mt-4">An in-depth analysis of DuelNow's multi-layered incentive loop.</p>
+        <img src="https://duelnow.com/assets/images/website/token/poster.jpg" alt="DuelNow Logo" class="h-24 w-24 mb-6 mx-auto rounded-full shadow-lg object-cover logo-spin">
+        <h1 class="max-w-4xl mx-auto font-bold">DuelNow's Playbook: Campaign Strategy & Tokenomics</h1>
+        <p class="text-2xl mt-4 neon-text">An in-depth analysis of DuelNow's multi-layered incentive loop.</p>
     </header>
 
     <!-- Section: Problems We Will Be Solving -->
@@ -170,7 +194,7 @@
                      <div class="space-y-3">
                         <div class="flex justify-between items-baseline"><span class="text-yellow-300">🥇 1st Place</span><span class="font-mono text-lg">$15,000</span></div>
                         <div class="flex justify-between items-baseline"><span class="text-gray-300">🥈 2nd Place</span><span class="font-mono text-lg">$9,000</span></div>
-                        <div class="flex justify-between items-baseline"><span class="text-yellow-600">🥉 3rd Place</span><span class="font-mono text-lg">$6,000</span></div>
+                        <div class="flex justify-between items-baseline"><span class="text-yellow-600">� 3rd Place</span><span class="font-mono text-lg">$6,000</span></div>
                     </div>
                 </div>
             </div>
