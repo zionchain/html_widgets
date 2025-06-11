@@ -11,76 +11,61 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
+        /* Base styles (Dark Mode by default) */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0D1117;
             color: #E6EDF3;
+            transition: background-color 0.3s, color 0.3s;
         }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 2rem;
-        }
-        .card {
-            background-color: #161B22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 2rem;
-        }
-        .primary-accent {
-            color: #F73636;
-        }
-        h1 {
-            font-weight: 900;
-            font-size: 2.5rem;
-            line-height: 1.1;
-        }
-        h2 {
-            font-weight: 700;
-            font-size: 2rem;
-            border-bottom: 2px solid #F73636;
-            padding-bottom: 0.5rem;
-            margin-bottom: 2rem;
-        }
-        h3 {
-            font-weight: 600;
-            font-size: 1.5rem;
-        }
-        /* Custom styles for charts to match dark theme */
-        Chart.defaults.color = '#E6EDF3';
-        Chart.defaults.borderColor = '#30363d';
-        Chart.defaults.font.family = "'Inter', 'sans-serif'";
+        .container { max-width: 1200px; margin: auto; padding: 2rem; }
+        .card { background-color: #161B22; border: 1px solid #30363d; border-radius: 12px; padding: 2rem; transition: background-color 0.3s, border-color 0.3s; }
+        .primary-accent { color: #F73636; }
+        h1 { font-weight: 900; font-size: 2.5rem; line-height: 1.1; }
+        h2 { font-weight: 700; font-size: 2rem; border-bottom: 2px solid #F73636; padding-bottom: 0.5rem; margin-bottom: 2rem; }
+        h3 { font-weight: 600; font-size: 1.5rem; }
 
-        /* Logo rotation animation */
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        .logo-spin {
-            animation: spin 4s linear infinite;
-        }
+        /* Light Mode Styles */
+        body.light-mode { background-color: #F3F4F6; color: #111827; }
+        body.light-mode .card { background-color: #FFFFFF; border-color: #E5E7EB; }
+        body.light-mode h2 { border-bottom-color: #F73636; }
+        body.light-mode .text-gray-400 { color: #4B5563; }
+        body.light-mode .text-gray-500 { color: #6B7281; }
+        body.light-mode .text-white { color: #111827; }
+        body.light-mode .bg-gray-800\/50 { background-color: rgba(243, 244, 246, 0.5); }
+        body.light-mode .bg-gray-900\/50 { background-color: rgba(229, 231, 235, 0.5); }
+        body.light-mode .bg-green-500\/20 { background-color: rgba(34, 197, 94, 0.1); }
+        body.light-mode .bg-green-500\/10 { background-color: rgba(34, 197, 94, 0.05); }
+        body.light-mode .text-green-300 { color: #166534; }
+        body.light-mode .border-gray-700 { border-color: #D1D5DB; }
+        body.light-mode .border-gray-600 { border-color: #9CA3AF; }
+        body.light-mode .bg-yellow-400\/10 { background-color: rgba(250, 204, 21, 0.1); }
+        body.light-mode .text-yellow-300 { color: #D97706; }
+        body.light-mode .bg-gray-400\/10 { background-color: rgba(156, 163, 175, 0.1); }
+        body.light-mode .text-gray-300 { color: #374151; }
+        body.light-mode .bg-yellow-700\/20 { background-color: rgba(217, 119, 6, 0.1); }
+        body.light-mode .text-yellow-500 { color: #B45309; }
+        body.light-mode .logo-spin { filter: invert(1); }
 
         /* Neon effect for subtitle */
-        .neon-text {
-            font-weight: 600;
-            color: #fff;
-            text-shadow:
-                0 0 5px #fff,
-                0 0 10px #F73636,
-                0 0 15px #F73636,
-                0 0 20px #F73636;
-        }
+        .neon-text { font-weight: 600; color: #fff; text-shadow: 0 0 5px #fff, 0 0 10px #F73636, 0 0 15px #F73636, 0 0 20px #F73636; }
+        body.light-mode .neon-text { color: #111827; text-shadow: none; }
+        
+        /* Toggle Switch */
+        #theme-toggle { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 50; }
     </style>
 </head>
 <body>
 
+<div id="theme-toggle">
+    <button class="bg-gray-700/50 p-2 rounded-full text-white" onclick="toggleTheme()">
+        <svg id="theme-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+    </button>
+</div>
+
 <div class="container">
     <header class="text-center my-12">
-        <img src="https://duelnow.com/assets/images/website/token/poster.jpg" alt="DuelNow Logo" class="h-24 w-24 mb-6 mx-auto rounded-full shadow-lg object-cover logo-spin">
+        <img src="https://duelnow.com/assets/images/website/token/poster.jpg" alt="DuelNow Logo" class="h-24 w-24 mb-6 mx-auto rounded-full shadow-lg object-cover">
         <h1 class="max-w-4xl mx-auto font-bold">DuelNow's Playbook: Campaign Strategy & Tokenomics</h1>
         <p class="text-2xl mt-4 neon-text">An in-depth analysis of DuelNow's multi-layered incentive loop.</p>
     </header>
@@ -184,7 +169,7 @@
                     <h4 class="font-bold text-lg text-center mb-4 text-red-400">Master Tier</h4>
                      <div class="space-y-3">
                         <div class="flex justify-between items-baseline"><span class="text-yellow-300">🥇 1st Place</span><span class="font-mono text-lg">$11,250</span></div>
-                        <div class="flex justify-between items-baseline"><span class="text-gray-300">🥈 2nd Place</span><span class="font-mono text-lg">$6,750</span></div>
+                        <div class="flex justify-between items-baseline"><span class="text-gray-300">� 2nd Place</span><span class="font-mono text-lg">$6,750</span></div>
                         <div class="flex justify-between items-baseline"><span class="text-yellow-600">🥉 3rd Place</span><span class="font-mono text-lg">$4,500</span></div>
                     </div>
                 </div>
@@ -194,7 +179,7 @@
                      <div class="space-y-3">
                         <div class="flex justify-between items-baseline"><span class="text-yellow-300">🥇 1st Place</span><span class="font-mono text-lg">$15,000</span></div>
                         <div class="flex justify-between items-baseline"><span class="text-gray-300">🥈 2nd Place</span><span class="font-mono text-lg">$9,000</span></div>
-                        <div class="flex justify-between items-baseline"><span class="text-yellow-600">� 3rd Place</span><span class="font-mono text-lg">$6,000</span></div>
+                        <div class="flex justify-between items-baseline"><span class="text-yellow-600">🥉 3rd Place</span><span class="font-mono text-lg">$6,000</span></div>
                     </div>
                 </div>
             </div>
@@ -459,6 +444,31 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        let charts = {}; // Moved initialization to the top of the scope
+        
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const sunIcon = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>`;
+        const moonIcon = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>`;
+
+        window.toggleTheme = () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            updateThemeUI(isLight);
+        };
+
+        const updateThemeUI = (isLight) => {
+            themeIcon.innerHTML = isLight ? moonIcon : sunIcon;
+            updateChartThemes(isLight);
+        };
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+        }
+        
         const roadmapData = [
             { timeline: 'Aug 2025', objective: 'Launch Campaign Football (NFL, NCAA)', action: 'Announce Bracket & Pick’em challenges, promote on X, open entries.', impact: 'Low' },
             { timeline: 'Nov 2025', objective: 'Finalize Participants NCAA Football', action: 'Close Bracket Challenge, verify token holdings.', impact: 'Low' },
@@ -501,16 +511,27 @@
 
 
         Chart.register(ChartDataLabels);
-        // Chart.js implementation for Fund Allocation
-        const allocationCtx = document.getElementById('fundAllocationChart');
-        const tokenomicsData = {
-            labels: ['Bracket Rewards', 'F2P Pick\'em Rewards', 'Referral Bonuses'],
-            data: [222222222, 132000000, 55555556],
-            colors: ['#F73636', '#B71C1C', '#D32F2F']
-        };
 
-        if (allocationCtx) {
-            new Chart(allocationCtx.getContext('2d'), {
+        function getChartColors(isLight) {
+            return {
+                fontColor: isLight ? '#111827' : '#E6EDF3',
+                gridColor: isLight ? '#D1D5DB' : '#30363d',
+                bgColor: isLight ? '#FFFFFF' : '#161B22',
+            };
+        }
+
+        function createAllocationChart(isLight) {
+            const colors = getChartColors(isLight);
+            const allocationCtx = document.getElementById('fundAllocationChart');
+            const tokenomicsData = {
+                labels: ['Bracket Rewards', 'F2P Pick\'em Rewards', 'Referral Bonuses'],
+                data: [222222222, 132000000, 55555556],
+                colors: ['#F73636', '#B71C1C', '#D32F2F']
+            };
+
+            if (charts.allocation) charts.allocation.destroy();
+
+            charts.allocation = new Chart(allocationCtx.getContext('2d'), {
                 type: 'doughnut',
                 data: {
                     labels: tokenomicsData.labels,
@@ -518,7 +539,7 @@
                         label: 'Campaign Budget ($DNOW)',
                         data: tokenomicsData.data,
                         backgroundColor: tokenomicsData.colors,
-                        borderColor: '#161B22',
+                        borderColor: colors.bgColor,
                         borderWidth: 5,
                     }]
                 },
@@ -528,24 +549,12 @@
                     cutout: '60%',
                     plugins: {
                         legend: { display: false },
-                        tooltip: {
-                             callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) { label += ': '; }
-                                    if (context.parsed !== null) {
-                                        label += new Intl.NumberFormat('en-US').format(context.parsed) + ' $DNOW';
-                                    }
-                                    return label;
-                                }
-                            }
-                        },
+                        tooltip: { callbacks: { label: (c) => `${c.label}: ${new Intl.NumberFormat().format(c.parsed)} $DNOW` }},
                         datalabels: { display: false }
                     }
                 }
             });
 
-            // Generate Legend
             const legendContainer = document.getElementById('tokenomics-legend');
             let legendHtml = '';
             const totalBudgetedDnow = tokenomicsData.data.reduce((a, b) => a + b, 0);
@@ -565,69 +574,44 @@
             legendContainer.innerHTML = legendHtml;
         }
 
-        // Chart.js implementation for TVL vs Price
-        const tvlCtx = document.getElementById('tvlPriceChart');
-        if (tvlCtx) {
-            new Chart(tvlCtx.getContext('2d'), {
+        function createTvlChart(isLight) {
+            const colors = getChartColors(isLight);
+            const tvlCtx = document.getElementById('tvlPriceChart');
+            
+            if (charts.tvl) charts.tvl.destroy();
+
+            charts.tvl = new Chart(tvlCtx.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: ["August 2025", "September 2025", "October 2025", "November 2025", "December 2025", "January 2026"],
                     datasets: [{
-                        label: "TVL ($DNOW)",
-                        data: [20500000, 41000000, 61500000, 82000000, 102500000, 102500000],
-                        borderColor: "#4CAF50",
-                        backgroundColor: "rgba(76, 175, 80, 0.2)",
-                        yAxisID: "y-tvl",
-                        fill: true,
-                        tension: 0.4
+                        label: "TVL ($DNOW)", data: [20500000, 41000000, 61500000, 82000000, 102500000, 102500000],
+                        borderColor: "#4CAF50", backgroundColor: "rgba(76, 175, 80, 0.2)", yAxisID: "y-tvl", fill: true, tension: 0.4
                     }, {
-                        label: "Price ($USD)",
-                        data: [0.0014, 0.00168, 0.00196, 0.00224, 0.00252, 0.0028],
-                        borderColor: "#F73636",
-                        backgroundColor: "rgba(247, 54, 54, 0.2)",
-                        yAxisID: "y-price",
-                        fill: false,
-                        tension: 0.4
+                        label: "Price ($USD)", data: [0.0014, 0.00168, 0.00196, 0.00224, 0.00252, 0.0028],
+                        borderColor: "#F73636", backgroundColor: "rgba(247, 54, 54, 0.2)", yAxisID: "y-price", fill: false, tension: 0.4
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
+                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false, },
+                    plugins: { legend: { labels: { color: colors.fontColor }}},
                     scales: {
-                        x: {
-                            title: { display: true, text: 'Month' },
-                            grid: { color: '#30363d' }
-                        },
-                        "y-tvl": {
-                            type: 'linear',
-                            position: 'left',
-                            title: { display: true, text: 'TVL ($DNOW)' },
-                            grid: { color: '#30363d' },
-                            ticks: {
-                                callback: function(value) { return (value / 1e6) + 'M'; }
-                            }
-                        },
-                        "y-price": {
-                            type: 'linear',
-                            position: 'right',
-                            title: { display: true, text: 'Price (USD)'},
-                            grid: { drawOnChartArea: false },
-                            suggestedMin: 0.001,
-                            suggestedMax: 0.003
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
+                        x: { title: { display: true, text: 'Month', color: colors.fontColor }, grid: { color: colors.gridColor }, ticks: { color: colors.fontColor }},
+                        "y-tvl": { type: 'linear', position: 'left', title: { display: true, text: 'TVL ($DNOW)', color: colors.fontColor }, grid: { color: colors.gridColor }, ticks: { color: colors.fontColor, callback: (v) => (v/1e6)+'M' }},
+                        "y-price": { type: 'linear', position: 'right', title: { display: true, text: 'Price (USD)', color: colors.fontColor }, grid: { drawOnChartArea: false }, ticks: { color: colors.fontColor }}
                     }
                 }
             });
         }
+        
+        function updateChartThemes(isLight) {
+            createAllocationChart(isLight);
+            createTvlChart(isLight);
+        }
+
+        // Initial UI and Chart setup
+        updateThemeUI(savedTheme === 'light');
+
 
         // Mobile Table Scroll Logic
         const tableContainer = document.getElementById('tokenomics-table-container');
@@ -637,39 +621,18 @@
         if (tableContainer && scrollLeftBtn && scrollRightBtn) {
             const checkScroll = () => {
                 const { scrollLeft, scrollWidth, clientWidth } = tableContainer;
-                // A small tolerance to account for subpixel rendering
                 const tolerance = 2; 
 
-                if (scrollLeft > 0) {
-                    scrollLeftBtn.classList.remove('hidden');
-                } else {
-                    scrollLeftBtn.classList.add('hidden');
-                }
-
-                if (scrollLeft < scrollWidth - clientWidth - tolerance) {
-                    scrollRightBtn.classList.remove('hidden');
-                } else {
-                    scrollRightBtn.classList.add('hidden');
-                }
+                scrollLeftBtn.classList.toggle('hidden', scrollLeft <= 0);
+                scrollRightBtn.classList.toggle('hidden', scrollLeft >= scrollWidth - clientWidth - tolerance);
             };
 
-            scrollRightBtn.addEventListener('click', () => {
-                tableContainer.scroll({
-                    left: tableContainer.scrollWidth,
-                    behavior: 'smooth'
-                });
-            });
-
-            scrollLeftBtn.addEventListener('click', () => {
-                tableContainer.scroll({
-                    left: 0,
-                    behavior: 'smooth'
-                });
-            });
+            scrollRightBtn.addEventListener('click', () => { tableContainer.scroll({ left: tableContainer.scrollWidth, behavior: 'smooth' }); });
+            scrollLeftBtn.addEventListener('click', () => { tableContainer.scroll({ left: 0, behavior: 'smooth' }); });
 
             tableContainer.addEventListener('scroll', checkScroll);
-            window.addEventListener('resize', checkScroll); // Re-check on resize
-            checkScroll(); // Initial check
+            window.addEventListener('resize', checkScroll);
+            checkScroll();
         }
     });
 </script>
