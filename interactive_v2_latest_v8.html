@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>DuelNow - Interactive Market Depth Prototype</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap" rel="stylesheet"/>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#ec131e",
+            "background-dark": "#181111",
+            "surface-dark": "#271c1c",
+            "border-dark": "#392829",
+            "text-muted": "#b99d9e",
+          },
+          fontFamily: {
+            "display": ["Lexend", "sans-serif"],
+            "body": ["Noto Sans", "sans-serif"],
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Lexend', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #181111; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #392829; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #ec131e; }
+    .custom-scrollbar { scrollbar-width: thin; scrollbar-color: #392829 #181111; }
+
+    /* Tooltip: only show when hovering the icon wrapper */
+    .tip { display:none; }
+    .tipwrap:hover .tip { display:block; }
+  </style>
+</head>
+
+<body class="bg-background-dark text-white overflow-hidden h-screen flex w-full">
+  <!-- Sidebar (kept lightweight) -->
+  <aside class="w-64 h-full hidden md:flex flex-col border-r border-border-dark bg-background-dark flex-shrink-0 z-30">
+    <div class="p-6 pb-2 shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="bg-primary/20 rounded-full size-10 shadow-lg shadow-red-900/20 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary">sports_esports</span>
+        </div>
+        <h1 class="text-white text-xl font-bold leading-normal tracking-tight">DuelNow</h1>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-4 py-4 space-y-6 custom-scrollbar">
+      <nav class="flex flex-col gap-1">
+        <div class="px-2 mb-2">
+          <p class="text-[10px] font-bold text-text-muted uppercase tracking-wider opacity-60">Menu</p>
+        </div>
+        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-dark border border-border-dark group transition-colors" href="#">
+          <span class="material-symbols-outlined text-primary text-[20px]">explore</span>
+          <p class="text-white text-sm font-medium leading-normal">Browse</p>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-dark/50 transition-colors group" href="#">
+          <span class="material-symbols-outlined text-text-muted group-hover:text-white transition-colors text-[20px]">emoji_events</span>
+          <p class="text-text-muted group-hover:text-white text-sm font-medium leading-normal transition-colors">Leaderboards</p>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-dark/50 transition-colors group" href="#">
+          <span class="material-symbols-outlined text-text-muted group-hover:text-white transition-colors text-[20px]">receipt_long</span>
+          <p class="text-text-muted group-hover:text-white text-sm font-medium leading-normal transition-colors">My Orders</p>
+        </a>
+      </nav>
+
+      <nav class="flex flex-col gap-1">
+        <div class="px-2 mb-2">
+          <p class="text-[10px] font-bold text-text-muted uppercase tracking-wider opacity-60">Sports</p>
+        </div>
+        <div class="flex flex-col bg-surface-dark rounded-lg overflow-hidden border border-border-dark/50 my-1">
+  <a class="flex items-center justify-between px-3 py-2 bg-surface-dark text-white font-medium" href="#">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-[20px] text-primary">sports_basketball</span>
+      <span class="text-sm">Basketball</span>
+    </div>
+    <span class="text-xs font-medium text-white">177</span>
+  </a>
+  <div class="flex flex-col bg-black/20 pb-1">
+    <a class="flex items-center justify-between pl-11 pr-3 py-1.5 text-text-muted hover:text-white hover:bg-white/5 transition-colors text-sm" href="#">
+      <span>NBA</span>
+      <span class="text-xs opacity-60">127</span>
+    </a>
+    <a class="flex items-center justify-between pl-11 pr-3 py-1.5 text-text-muted hover:text-white hover:bg-white/5 transition-colors text-sm" href="#">
+      <span>NCAAB</span>
+      <span class="text-xs opacity-60">50</span>
+    </a>
+  </div>
+</div>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="flex-1 flex flex-col min-w-0 bg-background-dark">
+    <header class="h-16 flex items-center justify-between px-6 md:px-10 border-b border-border-dark bg-background-dark/95 backdrop-blur z-20 shrink-0">
+      <div class="flex items-center gap-4 md:gap-8 flex-1">
+        <h2 class="hidden md:block text-white text-lg font-bold leading-tight tracking-[-0.015em]">Browse Events</h2>
+        <label class="flex flex-col w-full max-w-[360px] h-10 relative group">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="material-symbols-outlined text-text-muted group-focus-within:text-white transition-colors">search</span>
+          </div>
+          <input class="w-full h-full rounded-lg bg-surface-dark border border-transparent focus:border-border-dark text-white placeholder:text-text-muted pl-10 pr-4 text-sm font-normal leading-normal focus:ring-1 focus:ring-border-dark focus:outline-none transition-all" placeholder="Search events, teams or pools..." />
+        </label>
+      </div>
+      <div class="flex items-center gap-4 md:gap-6 justify-end">
+        <div class="hidden sm:flex flex-col items-end mr-2">
+          <span class="text-xs text-text-muted">Available Balance</span>
+          <span class="text-sm font-bold text-white font-mono">$2,450.00</span>
+        </div>
+        <button class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-primary hover:bg-red-700 transition-colors text-white text-sm font-bold shadow-[0_0_15px_rgba(236,19,30,0.4)]">
+          <span class="material-symbols-outlined text-[18px]">add</span>
+          <span class="hidden sm:inline">Deposit</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar">
+      <!-- Leagues -->
+      <section class="flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold tracking-tight">Leagues</h3>
+          <a class="text-sm text-primary font-medium hover:text-white transition-colors" href="#">View All</a>
+        </div>
+        <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-surface-dark border border-border-dark hover:border-primary/50 text-text-muted hover:text-white pl-4 pr-4 transition-all text-xs font-medium uppercase">
+            All Events
+          </button>
+          <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white text-background-dark font-bold pl-4 pr-4 transition-colors text-xs uppercase">
+            <span class="material-symbols-outlined text-[16px]">sports_basketball</span> NBA
+          </button>
+          <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-surface-dark border border-border-dark hover:border-primary/50 text-text-muted hover:text-white pl-4 pr-4 transition-all text-xs font-medium uppercase">
+            <span class="material-symbols-outlined text-[16px]">sports_football</span> NFL
+          </button>
+          <button class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-surface-dark border border-border-dark hover:border-primary/50 text-text-muted hover:text-white pl-4 pr-4 transition-all text-xs font-medium uppercase">
+            <span class="material-symbols-outlined text-[16px]">sports_football</span> NCAAF
+          </button>
+        </div>
+      </section>
+
+      <!-- Fixtures -->
+      <section class="space-y-4">
+        <h3 class="text-lg font-bold tracking-tight">Fixtures</h3>
+
+        <div class="bg-surface-dark/40 border-y border-border-dark/50 py-1.5 px-4">
+          <span class="text-[10px] font-bold text-white uppercase tracking-wider">Today</span>
+        </div>
+
+        <!-- Game Card 1 (toggle ON, orderbook visible) -->
+        <article class="bg-surface-dark border border-border-dark rounded-xl overflow-hidden shadow-lg">
+          <!-- Game header -->
+          <div class="p-4 border-b border-border-dark flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary">sports_basketball</span>
+              <div class="flex flex-col">
+                <span id="gameTitle1" class="text-sm font-bold text-white">IND @ NYK</span>
+                <span id="gameTime1" class="text-xs text-text-muted">5:30 PM EST</span>
+              </div>
+            </div>
+            <div class="text-xs font-mono text-text-muted">Vol: <span class="text-white">$1.63m</span></div>
+          </div>
+
+          <!-- Teams + main markets -->
+          <div class="p-4 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 items-center">
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-[#F58426] flex items-center justify-center text-xs font-bold text-white border border-white/10">NYK</div>
+                <div>
+                  <p class="font-bold text-white leading-tight">New York Knicks</p>
+                  <p class="text-xs text-text-muted">18-7</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-[#FDBB30] text-black flex items-center justify-center text-xs font-bold border border-white/10">IND</div>
+                <div>
+                  <p class="font-bold text-white leading-tight">Indiana Pacers</p>
+                  <p class="text-xs text-text-muted">6-20</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main markets grid with headers -->
+            <div class="w-full">
+              <div class="hidden sm:grid grid-cols-3 gap-2 text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2">
+                <div class="text-center">Moneyline</div>
+                <div class="text-center">Spread</div>
+                <div class="text-center">Total</div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2">
+                <!-- Moneyline -->
+                <div class="space-y-2">
+                  <button data-select="moneyline" data-team="NYK" data-price="-113" class="main-odd w-full h-10 bg-primary/15 border border-primary/40 text-white font-bold rounded-lg flex items-center justify-between px-3 transition-colors shadow-[0_0_10px_rgba(236,19,30,0.15)]">
+                    <span>NYK</span><span>-113</span>
+                  </button>
+                  <button data-select="moneyline" data-team="IND" data-price="+125" class="main-odd w-full h-10 bg-background-dark border border-border-dark text-white/90 font-bold rounded-lg flex items-center justify-between px-3 hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>IND</span><span>+125</span>
+                  </button>
+                </div>
+
+                <!-- Spread -->
+                <div class="space-y-2">
+                  <button data-select="spread" data-team="NYK" data-line="-4.5" data-price="-109" class="main-odd w-full h-10 bg-background-dark border border-border-dark text-white/90 rounded-lg flex items-center justify-between px-3 text-sm hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>NYK -4.5</span><span class="font-mono">&nbsp;-109</span>
+                  </button>
+                  <button data-select="spread" data-team="IND" data-line="+4.5" data-price="-102" class="main-odd w-full h-10 bg-background-dark border border-border-dark text-white/90 rounded-lg flex items-center justify-between px-3 text-sm hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>IND +4.5</span><span class="font-mono">&nbsp;-102</span>
+                  </button>
+                </div>
+
+                <!-- Total -->
+                <div class="space-y-2">
+                  <button data-select="total" data-team="O" data-line="224.5" data-price="-109" class="main-odd w-full h-10 bg-background-dark border border-border-dark text-white/90 rounded-lg flex items-center justify-between px-3 text-sm hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>O 224.5</span><span class="font-mono">-109</span>
+                  </button>
+                  <button data-select="total" data-team="U" data-line="224.5" data-price="-104" class="main-odd w-full h-10 bg-background-dark border border-border-dark text-white/90 rounded-lg flex items-center justify-between px-3 text-sm hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>U 224.5</span><span class="font-mono">-104</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-3 flex items-center justify-end">
+                <a href="#" class="inline-flex items-center gap-2 text-xs font-bold text-primary hover:text-white transition-colors">
+                  +25 Markets <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toggle row -->
+          <div class="px-4 py-2 bg-background-dark/50 border-b border-border-dark flex items-center justify-between">
+            <label class="flex items-center gap-2 cursor-pointer group select-none">
+              <div class="relative inline-flex items-center cursor-pointer">
+                <input id="openOrdersToggle_game1" class="sr-only peer" type="checkbox" checked />
+                <div class="w-9 h-5 bg-surface-dark border border-border-dark rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-text-muted after:border after:border-gray-300 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary peer-checked:after:bg-white"></div>
+              </div>
+              <span class="text-sm font-medium text-text-muted group-hover:text-white transition-colors">Show Open Orders</span>
+            </label>
+            <span class="material-symbols-outlined text-text-muted cursor-pointer hover:text-white transition-colors text-[18px]" title="Refresh">refresh</span>
+          </div>
+
+          <!-- Open Orders Panel -->
+          <div id="openOrdersPanel_game1" class="bg-background-dark/30">
+            <!-- Header row -->
+            <div class="grid grid-cols-[40%_20%_20%_20%] h-9 items-center border-b border-white/5 px-0 text-xs">
+              <div class="px-4">
+                <div class="relative inline-flex items-center gap-2">
+                  <button id="marketBtn" class="flex items-center gap-1 text-[10px] font-bold text-text-muted uppercase hover:text-white transition-colors">
+                    <span id="marketBtnLabel">Moneyline</span>
+                    <span class="bg-primary/15 text-primary border border-primary/30 text-[9px] px-1.5 py-0.5 rounded ml-1">Selected</span>
+                    <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                  </button>
+
+                  <!-- tooltip for selector -->
+                  <div class="tipwrap relative">
+                    <span class="material-symbols-outlined text-[12px] text-text-muted hover:text-white cursor-pointer">info</span>
+                    <div class="tip absolute bottom-full left-0 mb-2 w-56 bg-surface-dark border border-border-dark p-2 rounded-lg shadow-xl z-50 text-[10px] leading-relaxed text-white">
+                      Switch markets to render the respective Open Orders view.
+                      <div class="absolute bottom-[-5px] left-4 w-2 h-2 bg-surface-dark border-r border-b border-border-dark rotate-45"></div>
+                    </div>
+                  </div>
+
+                  <!-- dropdown menu -->
+                  <div id="marketMenu" class="hidden absolute top-full left-0 mt-2 w-44 bg-surface-dark border border-border-dark rounded-lg shadow-xl z-50 overflow-hidden">
+                    <button data-market="moneyline" class="w-full text-left px-3 py-2 text-xs hover:bg-white/5">Moneyline</button>
+                    <button data-market="spread" class="w-full text-left px-3 py-2 text-xs hover:bg-white/5">Spread</button>
+                    <button data-market="total" class="w-full text-left px-3 py-2 text-xs hover:bg-white/5">Total</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-center gap-1">
+                <span class="text-[10px] font-bold text-text-muted uppercase tracking-wider">Price</span>
+                <div class="tipwrap relative">
+                  <span class="material-symbols-outlined text-[12px] text-text-muted hover:text-white cursor-pointer">info</span>
+                  <div class="tip absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 bg-surface-dark border border-border-dark p-3 rounded-lg shadow-xl z-50">
+                    <div class="text-[10px] font-bold text-text-muted mb-1">Price Indicator</div>
+              <div class=\"text-[10px] text-text-muted mb-2\">Signals vary based on the current market price.</div>
+              <div class=\"text-[10px] space-y-2\">
+                      <div class="flex items-center gap-2"><span class="text-green-500 font-bold">▲</span> <span class="text-text-muted">Better</span></div>
+                      <div class="flex items-center gap-2"><span class="text-primary font-bold">▼</span> <span class="text-text-muted">Worse</span></div>
+                      <div class="flex items-center gap-2"><span class="text-amber-500 font-bold">**</span> <span class="text-text-muted">At market
+
+Signals vary based on the current market price.</span></div>
+                    </div>
+                    <div class="absolute bottom-[-5px] left-1/2 -translate-x-1/2 w-2 h-2 bg-surface-dark border-r border-b border-border-dark rotate-45"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-right px-4 text-[10px] font-bold text-text-muted uppercase tracking-wider">Open Orders</div>
+              <div class="text-right px-4 text-[10px] font-bold text-text-muted uppercase tracking-wider">Total</div>
+            </div>
+
+            <!-- Rows -->
+            <div id="orderbookRows" class="max-h-[320px] overflow-y-auto custom-scrollbar"></div>
+          </div>
+        </article>
+
+        <!-- Game Card 2 (toggle OFF, orderbook hidden) -->
+        <article class="bg-surface-dark border border-border-dark rounded-xl overflow-hidden shadow-lg">
+          <div class="p-4 border-b border-border-dark flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary">sports_basketball</span>
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-white">ATL @ CHA</span>
+                <span class="text-xs text-text-muted">5:30 PM EST</span>
+              </div>
+            </div>
+            <div class="text-xs font-mono text-text-muted">Vol: <span class="text-white">$352.07k</span></div>
+          </div>
+
+          <div class="p-4 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 items-center">
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-[#E03A3E] flex items-center justify-center text-xs font-bold text-white border border-white/10">ATL</div>
+                <div>
+                  <p class="font-bold text-white leading-tight">Atlanta Hawks</p>
+                  <p class="text-xs text-text-muted">15-12</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-[#1D1160] flex items-center justify-center text-xs font-bold text-white border border-white/10">CHA</div>
+                <div>
+                  <p class="font-bold text-white leading-tight">Charlotte Hornets</p>
+                  <p class="text-xs text-text-muted">8-18</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-full">
+              <div class="hidden sm:grid grid-cols-3 gap-2 text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2">
+                <div class="text-center">Moneyline</div>
+                <div class="text-center">Spread</div>
+                <div class="text-center">Total</div>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="space-y-2">
+                  <button class="w-full h-10 bg-background-dark border border-border-dark text-white/90 font-bold rounded-lg flex items-center justify-between px-3 hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>ATL</span><span>-135</span>
+                  </button>
+                  <button class="w-full h-10 bg-background-dark border border-border-dark text-white/90 font-bold rounded-lg flex items-center justify-between px-3 hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>CHA</span><span>+115</span>
+                  </button>
+                </div>
+                <div class="space-y-2">
+                  <button class="w-full h-10 bg-background-dark border border-border-dark text-white/90 rounded-lg flex items-center justify-between px-3 text-sm hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>ATL -4.5</span><span class="font-mono">&nbsp;-110</span>
+                  </button>
+                  <button class="w-full h-10 bg-background-dark border border-border-dark text-white/90 rounded-lg flex items-center justify-between px-3 text-sm hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>CHA +4.5</span><span class="font-mono">&nbsp;-110</span>
+                  </button>
+                </div>
+                <div class="space-y-2">
+                  <button class="w-full h-10 bg-background-dark border border-border-dark text-white/90 rounded-lg flex items-center justify-between px-3 text-sm hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>O 237.5</span><span class="font-mono">-108</span>
+                  </button>
+                  <button class="w-full h-10 bg-background-dark border border-border-dark text-white/90 rounded-lg flex items-center justify-between px-3 text-sm hover:bg-white/5 hover:border-primary/30 transition-colors">
+                    <span>U 237.5</span><span class="font-mono">-112</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-3 flex items-center justify-end">
+                <a href="#" class="inline-flex items-center gap-2 text-xs font-bold text-primary hover:text-white transition-colors">
+                  +48 Markets <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-4 py-2 bg-background-dark/50 border-b border-border-dark flex items-center justify-between">
+            <label class="flex items-center gap-2 cursor-pointer group select-none">
+              <div class="relative inline-flex items-center cursor-pointer">
+                <input id="openOrdersToggle_game2" class="sr-only peer" type="checkbox" />
+                <div class="w-9 h-5 bg-surface-dark border border-border-dark rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-text-muted after:border after:border-gray-300 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary peer-checked:after:bg-white"></div>
+              </div>
+              <span class="text-sm font-medium text-text-muted group-hover:text-white transition-colors">Show Open Orders</span>
+            </label>
+            <span class="material-symbols-outlined text-text-muted cursor-pointer hover:text-white transition-colors text-[18px]" title="Refresh">refresh</span>
+          </div>
+
+          <div id="openOrdersPanel_game2" class="hidden bg-background-dark/30 p-4">
+            <div class="flex flex-col items-start gap-2">
+              <p class="text-sm text-text-muted">No open orders — create your own.</p>
+              <button id="createOrderBtn_game2" class="h-8 px-3 bg-primary hover:bg-red-700 text-white text-xs font-bold rounded-lg transition-colors">Create Order</button>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+
+<script>
+/**
+ * DuelNow interactive prototype logic (patched)
+ * - Two games with independent "Show Open Orders" toggles
+ * - Game 1: consolidated orderbook + market dropdown (Moneyline/Spread/Total)
+ * - Game 2: empty-state with "Create Order" that opens the Order Slip prefilled
+ */
+
+const bookData_game1 = {
+  moneyline: {
+    label: "Moneyline",
+    selected: { side: "NYK", price: "-113" },
+    rows: [
+      { side: "NYK", price: "-120", indicator: "▼", indicatorTone: "down", openOrders: "30,209.11", total: "$128,342.94", depth: 25 },
+      { side: "NYK", price: "-118", indicator: "▼", indicatorTone: "down", openOrders: "46,844.62", total: "$107,800.75", depth: 40 },
+      { side: "NYK", price: "-113", indicator: "**", indicatorTone: "at",   openOrders: "57,351.69", total: "$76,414.85",  depth: 60 },
+      { side: "NYK", price: "-110", indicator: "▲", indicatorTone: "up",   openOrders: "59,327.28", total: "$38,562.73",  depth: 50 },
+      { divider: true, market: "IND @ NYK", left: "NYK -113", right: "IND +125", marketType: "MONEYLINE" },
+      { side: "IND", price: "+120", indicator: "▼", indicatorTone: "down", openOrders: "30,930.44", total: "$19,795.48",  depth: 30 },
+      { side: "IND", price: "+125", indicator: "**", indicatorTone: "at",  openOrders: "21,419.41", total: "$33,289.71",  depth: 20 },
+      { side: "IND", price: "+130", indicator: "▲", indicatorTone: "up",  openOrders: "17,985.76", total: "$44,440.88",  depth: 15 },
+      { side: "IND", price: "+132", indicator: "▲", indicatorTone: "up",  openOrders: "51,882.61", total: "$76,089.27",  depth: 45 },
+    ],
+  },
+  spread: {
+    label: "Spread",
+    selected: { side: "NYK", line: "-4.5", price: "-109" },
+    rows: [
+      // NOTE: spread makers choose line + odds; display as "line @ odds"
+      { side: "NYK", line: "-5.0", price: "-112", indicator: "▼", indicatorTone: "down", openOrders: "8,120.50", total: "$21,330.00", depth: 22 },
+      { side: "NYK", line: "-4.5", price: "-109", indicator: "**", indicatorTone: "at",  openOrders: "12,004.10", total: "$34,912.25", depth: 38 },
+      { side: "NYK", line: "-4.0", price: "-105", indicator: "▲", indicatorTone: "up",  openOrders: "6,884.70", total: "$17,901.80", depth: 18 },
+      { divider: true, market: "IND @ NYK", left: "NYK -4.5", right: "IND +4.5", marketType: "SPREAD" },
+      { side: "IND", line: "+5.0", price: "-112", indicator: "▼", indicatorTone: "down", openOrders: "7,210.00", total: "$19,850.00", depth: 26 },
+      { side: "IND", line: "+4.5", price: "-110", indicator: "**", indicatorTone: "at",  openOrders: "10,330.00", total: "$28,100.00", depth: 34 },
+      { side: "IND", line: "+4.0", price: "-106", indicator: "▲", indicatorTone: "up",  openOrders: "5,550.00", total: "$14,775.00", depth: 16 },
+    ],
+  },
+  total: {
+    label: "Total",
+    selected: { side: "O", line: "224.5", price: "-109" },
+    rows: [
+      { side: "O", line: "224.5", price: "-109", indicator: "**", indicatorTone: "at", openOrders: "15,120.00", total: "$41,200.00", depth: 44 },
+      { side: "O", line: "225.0", price: "-112", indicator: "▼",  indicatorTone: "down", openOrders: "9,200.00", total: "$25,500.00", depth: 28 },
+      { divider: true, market: "IND @ NYK", left: "O 224.5", right: "U 224.5", marketType: "TOTAL" },
+      { side: "U", line: "224.5", price: "-109", indicator: "**", indicatorTone: "at", openOrders: "13,450.00", total: "$38,900.00", depth: 40 },
+      { side: "U", line: "224.0", price: "-105", indicator: "▲",  indicatorTone: "up", openOrders: "6,750.00", total: "$18,600.00", depth: 18 },
+    ],
+  },
+};
+
+let activeMarket = "moneyline";
+
+/** Elements (Game 1) */
+const toggle1 = document.getElementById("openOrdersToggle_game1");
+const panel1  = document.getElementById("openOrdersPanel_game1");
+const marketBtn   = document.getElementById("marketBtn");
+const marketMenu  = document.getElementById("marketMenu");
+const marketLabel = document.getElementById("marketBtnLabel");
+const selectedBadge = document.getElementById("marketSelectedBadge");
+const rowsEl = document.getElementById("orderbookRows");
+
+/** Elements (Game 2) */
+const toggle2 = document.getElementById("openOrdersToggle_game2");
+const panel2  = document.getElementById("openOrdersPanel_game2");
+const createBtn2 = document.getElementById("createOrderBtn_game2");
+
+/** Bet slip */
+const slipCheckbox = document.getElementById("slip-expand");
+const slipPillText = document.getElementById("slipPillText");
+const slipCountBadge = document.getElementById("slipCountBadge");
+const slipMarketTag = document.getElementById("slipMarketTag");
+const slipMatchup = document.getElementById("slipMatchup");
+const slipWhen = document.getElementById("slipWhen");
+const slipLine = document.getElementById("slipLine");
+const slipOdds = document.getElementById("slipOdds");
+const slipPickALabel = document.getElementById("slipPickALabel");
+const slipPickBLabel = document.getElementById("slipPickBLabel");
+
+/** Utilities */
+function show(el){ el && el.classList.remove("hidden"); }
+function hide(el){ el && el.classList.add("hidden"); }
+
+function indicatorClass(tone) {
+  if (tone === "up") return "text-green-500";
+  if (tone === "down") return "text-primary";
+  return "text-amber-500 font-bold tracking-widest";
+}
+
+function priceTextForRow(marketKey, r) {
+  if (marketKey === "spread") return `${r.line} @ ${r.price}`;
+  if (marketKey === "total")  return `${r.side} ${r.line} @ ${r.price}`;
+  return `${r.price}`; // moneyline
+}
+
+function isSelected(marketKey, r) {
+  const sel = bookData_game1[marketKey].selected;
+  if (marketKey === "moneyline") return r.side === sel.side && r.price === sel.price;
+  if (marketKey === "spread")    return r.side === sel.side && r.line === sel.line && r.price === sel.price;
+  if (marketKey === "total")     return r.side === sel.side && r.line === sel.line && r.price === sel.price;
+  return false;
+}
+
+function setSelected(marketKey, r) {
+  if (marketKey === "moneyline") bookData_game1[marketKey].selected = { side: r.side, price: r.price };
+  if (marketKey === "spread")    bookData_game1[marketKey].selected = { side: r.side, line: r.line, price: r.price };
+  if (marketKey === "total")     bookData_game1[marketKey].selected = { side: r.side, line: r.line, price: r.price };
+}
+
+function renderOrderbook() {
+  if (!rowsEl) return;
+
+  const data = bookData_game1[activeMarket];
+  marketLabel && (marketLabel.textContent = data.label);
+
+  // "Selected" badge should remain visible and reflect current market
+  if (selectedBadge) selectedBadge.textContent = "Selected";
+
+  rowsEl.innerHTML = "";
+
+  data.rows.forEach((r, idx) => {
+    if (r.divider) {
+      const divider = document.createElement("div");
+      divider.className = "h-9 bg-surface-dark/80 border-y border-border-dark flex items-center justify-between px-4 text-xs font-mono shadow-inner";
+      divider.innerHTML = `
+        <span class="text-text-muted hidden sm:inline">MARKET <span class="text-white font-bold ml-1">${r.market}</span></span>
+        <span class="text-text-muted sm:hidden">MARKET</span>
+        <div class="flex gap-4">
+          <span class="text-primary font-bold">${r.left}</span>
+          <span class="text-[#4ade80] font-bold">${r.right}</span>
+        </div>
+        <span class="text-text-muted font-bold">${r.marketType}</span>
+      `;
+      rowsEl.appendChild(divider);
+      return;
+    }
+
+    const selected = isSelected(activeMarket, r);
+
+    const row = document.createElement("div");
+    row.className = [
+      "order-row grid grid-cols-[40%_20%_20%_20%] h-[36px] items-center text-sm relative group transition-colors border-b border-white/[0.03] cursor-pointer",
+      selected ? "bg-white/[0.07] ring-1 ring-primary/40" : "hover:bg-white/5",
+      idx % 2 === 1 ? "bg-white/[0.02]" : ""
+    ].join(" ");
+
+    row.innerHTML = `
+      <div class="relative h-full flex items-center px-4 w-full">
+        <div class="depth-bar-container absolute inset-y-0 left-0 ${r.side === "NYK" ? "bg-[#F58426]/10" : r.side === "IND" ? "bg-[#FDBB30]/10" : "bg-primary/10"} w-[${r.depth}%] transition-all group-hover:bg-white/10"></div>
+        <span class="team-tag relative z-10 text-[9px] font-bold ${r.side === "NYK" ? "bg-[#F58426] text-white" : r.side === "IND" ? "bg-[#FDBB30] text-black" : "bg-surface-dark text-white"} px-1.5 py-0.5 rounded shadow-sm">
+          ${r.side}
+        </span>
+      </div>
+
+      <div class="price-cell text-center relative flex justify-center items-center">
+        <span class="price-value font-mono font-bold ${r.side === "IND" ? "text-[#4ade80]" : "text-primary"}">${priceTextForRow(activeMarket, r)}</span>
+        <span class="price-indicator text-[10px] ml-2 ${indicatorClass(r.indicatorTone)}">${r.indicator}</span>
+      </div>
+
+      <div class="orders-cell text-right pr-4 font-mono text-text-muted text-xs">${r.openOrders}</div>
+      <div class="total-cell text-right pr-4 font-mono text-white text-xs">${r.total}</div>
+    `;
+
+    row.addEventListener("click", () => {
+      setSelected(activeMarket, r);
+      renderOrderbook();
+      openSlipFromBookRow(r, activeMarket);
+    });
+
+    rowsEl.appendChild(row);
+  });
+}
+
+/** Market dropdown */
+function setActiveMarket(marketKey) {
+  activeMarket = marketKey;
+  renderOrderbook();
+}
+
+function closeMenu() { hide(marketMenu); }
+function openMenu()  { show(marketMenu); }
+
+if (marketBtn && marketMenu) {
+  marketBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (marketMenu.classList.contains("hidden")) openMenu(); else closeMenu();
+  });
+
+  document.addEventListener("click", () => closeMenu());
+
+  marketMenu.querySelectorAll("[data-market]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const key = btn.getAttribute("data-market");
+      setActiveMarket(key);
+      closeMenu();
+    });
+  });
+}
+
+/** Open orders toggles */
+function syncToggle(toggleEl, panelEl) {
+  if (!toggleEl || !panelEl) return;
+  const apply = () => (toggleEl.checked ? show(panelEl) : hide(panelEl));
+  toggleEl.addEventListener("change", apply);
+  apply();
+}
+
+syncToggle(toggle1, panel1);
+syncToggle(toggle2, panel2);
+
+/** Empty-state "Create Order" for game 2 */
+
+function openSlipPrefilledForGame2(){
+  const btn = document.getElementById("createOrderBtn_game2");
+  const card = btn ? btn.closest("article") : null;
+
+  // Fallbacks
+  let teamA = "ATL";
+  let teamB = "CHA";
+  let matchup = "CHA @ ATL";
+  let when = "8:15 PM EST";
+
+  // Try to extract team abbreviations from the card badges
+  if (card) {
+    const badges = Array.from(card.querySelectorAll("div.w-8.h-8.rounded"))
+      .map(n => (n.textContent || "").trim())
+      .filter(Boolean);
+    if (badges.length >= 2) {
+      teamA = badges[0];
+      teamB = badges[1];
+      matchup = `${teamB} @ ${teamA}`;
+    }
+  }
+
+  // Extract realistic moneyline odds from the first matching buttons in the card
+  let oddsA = "-135";
+  let oddsB = "+115";
+  if (card) {
+    const mlBtns = Array.from(card.querySelectorAll("button"))
+      .map(b => ({ b, t: (b.textContent || "").replace(/\s+/g," ").trim() }))
+      .filter(x => new RegExp(`^(${teamA}|${teamB})\\s*[+-]\\d+`).test(x.t));
+
+    const a = mlBtns.find(x => x.t.startsWith(teamA));
+    const b = mlBtns.find(x => x.t.startsWith(teamB));
+    if (a) oddsA = a.t.replace(teamA,"").trim();
+    if (b) oddsB = b.t.replace(teamB,"").trim();
+  }
+
+  fillSlip({
+    matchup,
+    when,
+    marketLabel: "moneyline",
+    teamA,
+    teamB,
+    selectedTeam: teamA,
+    lineValue: "—",
+    oddsValue: oddsA,
+    oddsA,
+    oddsB
+  });
+}
+
+if (createBtn2) {
+  createBtn2.addEventListener("click", (e) => {
+    e.preventDefault();
+    openSlipPrefilledForGame2();
+  });
+}
+
+
+/** Odds + slip math */
+const SLIP_FEE_RATE = 0.05; // 5% dummy fee for prototype
+
+function parseAmericanOdds(v){
+  const s = String(v ?? "").trim();
+  const n = parseInt(s.replace(/[^\d\-+]/g,""), 10);
+  return Number.isFinite(n) ? n : null;
+}
+
+function americanToProfit(risk, oddsInt){
+  const r = Number(risk);
+  if (!Number.isFinite(r) || r <= 0 || oddsInt === null) return 0;
+  if (oddsInt < 0) return r * (100 / Math.abs(oddsInt));
+  return r * (oddsInt / 100);
+}
+
+function impliedProbFromAmerican(oddsInt){
+  if (oddsInt === null) return 0.5;
+  if (oddsInt < 0) return Math.abs(oddsInt) / (Math.abs(oddsInt) + 100);
+  return 100 / (oddsInt + 100);
+}
+
+function probToAmerican(p){
+  const pp = Math.min(0.99, Math.max(0.01, p));
+  if (pp >= 0.5) return -Math.round((pp / (1-pp)) * 100);
+  return Math.round(((1-pp)/pp) * 100);
+}
+
+function formatMoney(x){
+  const n = Number(x);
+  if (!Number.isFinite(n)) return "$0.00";
+  return "$" + n.toFixed(2);
+}
+
+/** Slip helpers */
+const slipExpandCheckbox = document.getElementById("slip-expand");
+function openSlip() {
+  if (!slipExpandCheckbox) return;
+  slipExpandCheckbox.checked = true;
+  // ensure CSS peer-checked styles apply even if called during other DOM updates
+  requestAnimationFrame(() => { slipExpandCheckbox.checked = true; });
+  setTimeout(() => { slipExpandCheckbox.checked = true; }, 0);
+  const risk = document.getElementById("slipRiskInput");
+  if (risk) { try { risk.focus({ preventScroll: true }); } catch { risk.focus(); } }
+}
+function closeSlip(){ if (slipExpandCheckbox) slipExpandCheckbox.checked = false; }
+
+function setSlipCount(n){
+  const slipHeaderCount = document.getElementById("slipHeaderCount");
+  const slipCountBadge  = document.getElementById("slipCountBadge");
+  const slipPillText    = document.getElementById("slipPillText");
+  if (slipHeaderCount) slipHeaderCount.textContent = String(n);
+  if (slipCountBadge) {
+    slipCountBadge.textContent = String(n);
+    slipCountBadge.classList.toggle("hidden", n === 0);
+    slipCountBadge.classList.toggle("flex", n !== 0);
+  }
+  if (slipPillText) slipPillText.textContent = `Order Slip • ${n} Selection(s)`;
+}
+
+function fillSlip({matchup, when, marketLabel, teamA, teamB, selectedTeam, lineValue, oddsValue, oddsA, oddsB, colorA="#F58426", colorB="#FDBB30"}){
+  // Header area inside the slip
+  const elMatchup = document.getElementById("slipMatchup");
+  const elWhen    = document.getElementById("slipWhen");
+  const elTag     = document.getElementById("slipMarketTag");
+  const chipA     = document.getElementById("slipTeamA");
+  const chipB     = document.getElementById("slipTeamB");
+
+  // Selection buttons inside the slip
+  const btnA      = document.getElementById("slipPickA");
+  const btnB      = document.getElementById("slipPickB");
+  const lblA      = document.getElementById("slipPickALabel");
+  const lblB      = document.getElementById("slipPickBLabel");
+
+  const elLine    = document.getElementById("slipLine");
+  const elOdds    = document.getElementById("slipOdds");
+  const riskInput = document.getElementById("slipRiskInput");
+  const feeEl = document.getElementById("slipFeeValue");
+  const toWinEl = document.getElementById("slipToWinValue");
+  const totalPayEl = document.getElementById("slipTotalPayableValue");
+  const maxBtn = document.getElementById("slipMaxBtn");
+
+  // Store per-team odds for toggling (best-effort)
+  const oA = oddsA ?? ((selectedTeam === teamA) ? oddsValue : null);
+  const oB = oddsB ?? ((selectedTeam === teamB) ? oddsValue : null);
+
+  if (btnA && oA) btnA.dataset.odds = String(oA).trim();
+  if (btnB && oB) btnB.dataset.odds = String(oB).trim();
+
+
+  if (elMatchup) elMatchup.textContent = matchup || "—";
+  if (elWhen)    elWhen.textContent    = when || "—";
+  if (elTag)     elTag.textContent     = String(marketLabel || "moneyline").toUpperCase();
+
+  if (chipA) { chipA.textContent = teamA || "A"; chipA.style.backgroundColor = colorA; }
+  if (chipB) { chipB.textContent = teamB || "B"; chipB.style.backgroundColor = colorB; }
+
+  if (lblA) lblA.textContent = teamA || "A";
+  if (lblB) lblB.textContent = teamB || "B";
+
+  // Toggle selected styling
+  const pickActive = ["bg-primary/10","border","border-primary","text-primary","font-bold"];
+  const pickIdle   = ["bg-surface-dark","border","border-transparent","text-gray-400","font-medium"];
+
+  const select = (which) => {
+    if (!btnA || !btnB) return;
+    btnA.className = "h-9 rounded text-xs flex items-center justify-between px-3 transition-colors";
+    btnB.className = "h-9 rounded text-xs flex items-center justify-center hover:bg-surface-dark/80 transition-colors";
+    if (which === "A") {
+      btnA.classList.add(...pickActive);
+      btnB.classList.add(...pickIdle);
+      if (btnA.querySelector(".material-symbols-outlined") === null) {
+        const icon = document.createElement("span");
+        icon.className = "material-symbols-outlined text-[14px]";
+        icon.textContent = "check_circle";
+        btnA.appendChild(icon);
+      }
+    } else {
+      btnA.classList.add(...pickIdle);
+      btnB.classList.add(...pickActive);
+      // Remove the check icon from A when selecting B
+      btnA.querySelectorAll(".material-symbols-outlined").forEach(n => n.remove());
+    }
+  
+    // Update selected odds shown
+    const chosenOdds = (which === "A") ? (btnA?.dataset.odds) : (btnB?.dataset.odds);
+    if (elOdds && chosenOdds) elOdds.value = String(chosenOdds).trim();
+    if (typeof updateSlipMath === "function") updateSlipMath();
+};
+
+  // Ensure selection is valid
+  const sel = (selectedTeam === teamB) ? "B" : "A";
+  select(sel);
+
+  // Make buttons clickable (local toggle only)
+  if (btnA) btnA.onclick = () => select("A");
+  if (btnB) btnB.onclick = () => select("B");
+
+  if (elLine) elLine.value = String(lineValue ?? "—");
+  if (elOdds) elOdds.value = String(oddsValue ?? "—");
+
+  function updateSlipMath(){
+    const raw = (riskInput?.value ?? "").toString().replace(/[^0-9.]/g,"");
+    const risk = Math.max(0, parseFloat(raw || "0"));
+    const oddsInt = parseAmericanOdds(elOdds?.value);
+    const fee = risk * SLIP_FEE_RATE;
+    const profit = americanToProfit(risk, oddsInt);
+
+    if (feeEl) feeEl.textContent = formatMoney(fee);
+    if (toWinEl) toWinEl.textContent = formatMoney(profit);
+    if (totalPayEl) totalPayEl.textContent = formatMoney(risk + fee);
+  }
+
+
+  // Allow manual edits to Line and Odds (maker-style customization in prototype)
+  function normalizeOddsField(){
+    if (!elOdds) return;
+    const raw = String(elOdds.value ?? "").trim();
+    // Allow blank / dash placeholders
+    if (!raw || raw === "—" || raw === "-") { elOdds.value = raw || "—"; return; }
+    const n = parseAmericanOdds(raw);
+    if (n === null) { elOdds.value = raw; return; } // keep as typed if unparsable
+    elOdds.value = (n < 0) ? String(n) : ("+" + String(n));
+  }
+  if (elOdds){
+    elOdds.addEventListener("input", () => updateSlipMath());
+    elOdds.addEventListener("blur", () => { normalizeOddsField(); updateSlipMath(); });
+  }
+  if (elLine){
+    // Keep line free-form (supports -4.5, +4.5, 224.5, etc.)
+    elLine.addEventListener("input", () => {/* no-op for now */});
+    elLine.addEventListener("blur", () => {
+      const v = String(elLine.value ?? "").trim();
+      elLine.value = v || "—";
+    });
+  }
+
+  if (riskInput){
+    riskInput.addEventListener("input", () => updateSlipMath());
+    riskInput.addEventListener("blur", () => {
+      const raw = (riskInput.value ?? "").toString().replace(/[^0-9.]/g,"");
+      const risk = Math.max(0, parseFloat(raw || "0"));
+      riskInput.value = (risk === 0) ? "" : risk.toFixed(2);
+      updateSlipMath();
+    });
+  }
+
+  if (maxBtn){
+    maxBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (riskInput) {
+        riskInput.value = "2450.00";
+        updateSlipMath();
+      }
+    });
+  }
+
+  // Quick add buttons
+  const addBtns = Array.from(document.querySelectorAll('[data-add]'));
+  addBtns.forEach((b) => {
+    b.addEventListener("click", (e) => {
+      e.preventDefault();
+      const add = Number(b.getAttribute("data-add") || "0");
+      const cur = Number(String(riskInput.value || "0").replace(/[^0-9.]/g, "")) || 0;
+      const next = Math.min(2450, Math.max(0, cur + add));
+      riskInput.value = next.toFixed(2);
+      updateSlipMath();
+    });
+  });
+
+  // Privacy toggle (default Public = checked)
+  const privacyToggle = document.getElementById("slipPrivacyToggle");
+  const privacyLabel = document.getElementById("privacyLabel");
+  const privacyHint = document.getElementById("privacyHint");
+  if (privacyToggle && privacyLabel && privacyHint) {
+    const syncPrivacy = () => {
+      const isPublic = !!privacyToggle.checked;
+      privacyLabel.textContent = isPublic ? "Public" : "Private";
+      privacyHint.textContent = isPublic ? "Visible to everyone" : "Share & invite friends";
+    };
+    privacyToggle.addEventListener("change", syncPrivacy);
+    syncPrivacy();
+  }
+
+  updateSlipMath();
+
+
+  setSlipCount(1);
+  openSlip();
+}
+
+function openSlipFromBookRow(r, marketKey){
+  // Game 1 context
+  const matchup = "IND @ NYK";
+  const when = "5:30 PM EST";
+
+  // Default teams for game 1 (moneyline/spread)
+  let teamA = "NYK";
+  let teamB = "IND";
+  let selectedTeam = r?.side || teamA;
+
+  let lineValue = "—";
+  let oddsValue = r?.price ?? "—";
+  // Derive an opposite-side dummy price for the other team so selection toggle can update odds
+  const selOddsInt = parseAmericanOdds(oddsValue);
+  const pSel = impliedProbFromAmerican(selOddsInt);
+  const pOpp = 1 - pSel;
+  const oppOddsInt = probToAmerican(pOpp);
+  const oppOddsStr = (oppOddsInt < 0) ? String(oppOddsInt) : ("+" + String(oppOddsInt));
+  const oddsA = (selectedTeam === teamA) ? oddsValue : oppOddsStr;
+  const oddsB = (selectedTeam === teamB) ? oddsValue : oppOddsStr;
+
+
+  if (marketKey === "spread") {
+    lineValue = r?.line ?? "—";
+  } else if (marketKey === "total") {
+    teamA = "O";
+    teamB = "U";
+    selectedTeam = r?.side || teamA; // O / U
+    lineValue = r?.line ?? "—";
+  }
+
+  // Make sure selectedTeam is one of the two selectable buttons
+  if (selectedTeam !== teamA && selectedTeam !== teamB) selectedTeam = teamA;
+
+  fillSlip({
+    matchup: marketKey === "total" ? `${matchup} (Total)` : matchup,
+    when,
+    marketLabel: marketKey,
+    teamA,
+    teamB,
+    selectedTeam,
+    lineValue,
+    oddsValue,
+    oddsA,
+    oddsB
+  });
+}
+
+/** Initial render */
+renderOrderbook();
+</script>
+
+
+  <!-- Order Slip Toggle -->
+  <input id="slip-expand" class="peer hidden" type="checkbox"/>
+
+  <label id="slipPill" class="flex fixed bottom-4 right-4 z-[1100] cursor-pointer items-center gap-2 bg-surface-dark border border-border-dark hover:border-primary/50 text-white py-3 px-5 rounded-full shadow-xl shadow-black/50 transition-all duration-300 transform peer-checked:translate-y-24 peer-checked:opacity-0 hover:-translate-y-1" for="slip-expand">
+    <div class="relative">
+      <span class="material-symbols-outlined text-[20px] text-primary">receipt_long</span>
+    </div>
+    <span id="slipPillText" class="text-sm font-bold tracking-wide">Order Slip • 0 Selection(s)</span>
+  </label>
+
+  <div id="slipPanel" class="flex fixed bottom-4 right-4 z-[1200] w-[360px] max-h-[80vh] flex-col bg-surface-dark border border-border-dark shadow-[0_25px_50px_-12px_rgba(0,0,0,0.95)] rounded-xl overflow-hidden transition-all duration-300 transform translate-y-[120%] opacity-0 peer-checked:translate-y-0 peer-checked:opacity-100">
+    <div class="flex items-center justify-between px-4 py-3 bg-[#1e1515] border-b border-border-dark shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">receipt_long</span>
+        <span class="font-bold text-white">Order Slip</span>
+        <span id="slipCountBadge" class="bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded">0</span>
+      </div>
+      <label class="cursor-pointer text-text-muted hover:text-white p-1 rounded hover:bg-white/5 transition-colors flex items-center justify-center" for="slip-expand">
+        <span class="material-symbols-outlined text-[20px]">expand_more</span>
+      </label>
+    </div>
+
+    <div class="overflow-y-auto custom-scrollbar flex-1 bg-[#181111]">
+      <div class="px-4 py-2 border-b border-border-dark flex items-center justify-between bg-surface-dark/40">
+        <div class="flex items-center gap-2">
+          <div class="flex -space-x-1">
+            <div id="slipTeamA" class="size-5 rounded-full bg-[#F58426] flex items-center justify-center text-[8px] font-bold text-white border border-[#202020]">IND</div>
+            <div id="slipTeamB" class="size-5 rounded-full bg-[#FDBB30] flex items-center justify-center text-[8px] font-bold text-black border border-[#202020]">NYK</div>
+          </div>
+          <div class="flex flex-col">
+            <span id="slipMatchup" class="text-xs font-bold text-white leading-none">Pacers vs Knicks</span>
+            <span id="slipWhen" class="text-[9px] text-gray-500 font-medium">5:30 PM EST</span>
+          </div>
+        </div>
+        <div id="slipMarketTag" class="bg-[#2A1818] text-[#ff4d4d] text-[9px] font-bold px-1.5 py-0.5 rounded border border-primary/30 uppercase">MONEYLINE</div>
+      </div>
+
+      <div class="p-4 space-y-4">
+        <div class="space-y-1">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Selection</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="slipPickA" class="h-9 rounded bg-primary/10 border border-primary text-primary text-xs font-bold flex items-center justify-between px-3">
+              <span id="slipPickALabel">IND</span>
+              <span class="material-symbols-outlined text-[14px]">check_circle</span>
+            </button>
+            <button id="slipPickB" class="h-9 rounded bg-surface-dark border border-transparent text-gray-400 text-xs font-medium flex items-center justify-center hover:bg-surface-dark/80">
+              <span id="slipPickBLabel">NYK</span>
+            </button>
+          </div>
+                 <div class="space-y-1">
+                          <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Line</span>
+            <div class="relative group">
+  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">-</span>
+  <input id="slipLine"
+    class="w-full h-9 bg-surface-dark rounded border border-border-dark focus:border-primary/50 pl-6 pr-3 text-white font-bold text-xs outline-none transition-all text-right"
+    type="text"
+    value="—"
+    inputmode="decimal"
+  />
+</div>
+          </div>
+          <div class="space-y-1">
+            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Price (Odds)</span>
+            <div class="relative group">
+  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">-</span>
+  <input id="slipOdds"
+    class="w-full h-9 bg-surface-dark rounded border border-border-dark focus:border-primary/50 pl-6 pr-3 text-white font-bold text-xs outline-none transition-all text-right"
+    type="text"
+    value="-110"
+    inputmode="numeric"
+  />
+</div>
+          </div>
+        </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">To Risk</span>
+            <span class="text-[10px] text-gray-400">Balance: <span class="text-white font-bold">$2,450.00</span></span>
+          </div>
+          <div class="relative group">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">$</span>
+            <input class="w-full h-10 bg-surface-dark rounded border border-border-dark focus:border-primary/50 pl-6 pr-10 text-white font-bold text-sm outline-none transition-all" placeholder="0.00" id="slipRiskInput" type="text" value="50"/>
+            <button class="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded uppercase hover:bg-primary hover:text-white transition-colors" id="slipMaxBtn">Max</button>
+          </div>
+        </div>
+          <div class="grid grid-cols-4 gap-2 pt-1">
+            <button class="h-7 rounded bg-surface-dark border border-border-dark hover:border-gray-600 text-gray-400 hover:text-white text-[10px] font-bold transition-all" data-add="10">+$10</button>
+            <button class="h-7 rounded bg-surface-dark border border-border-dark hover:border-gray-600 text-gray-400 hover:text-white text-[10px] font-bold transition-all" data-add="25">+$25</button>
+            <button class="h-7 rounded bg-surface-dark border border-border-dark hover:border-gray-600 text-gray-400 hover:text-white text-[10px] font-bold transition-all" data-add="50">+$50</button>
+            <button class="h-7 rounded bg-surface-dark border border-border-dark hover:border-gray-600 text-gray-400 hover:text-white text-[10px] font-bold transition-all" data-add="100">+$100</button>
+          </div>
+          <div class="space-y-2 pt-2 border-t border-border-dark">
+            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Privacy Settings</span>
+            <div class="bg-surface-dark rounded p-3 flex items-center justify-between border border-border-dark">
+              <div class="flex flex-col">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-gray-400 text-[14px]">public</span>
+                  <span class="text-xs font-bold text-white" id="privacyLabel">Public</span>
+                </div>
+                <span class="text-[9px] text-gray-500" id="privacyHint">Visible to everyone</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer select-none">
+                <input id="slipPrivacyToggle" type="checkbox" class="sr-only peer" checked />
+                <div class="w-8 h-4 rounded-full bg-primary/30 peer-checked:bg-primary/30"></div>
+                <div class="absolute left-0.5 top-0.5 w-3 h-3 rounded-full bg-white transition-transform peer-checked:translate-x-4"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-4 bg-surface-dark border-t border-border-dark shrink-0 space-y-3">
+      <div class="flex justify-between items-end">
+        <div class="flex flex-col">
+          <span class="text-[10px] text-gray-500 font-bold uppercase">To Win</span>
+          <span class="text-green-500 font-bold text-lg leading-none"><span id="slipToWinValue">$95.45</span></span>
+        </div>
+        <div class="flex flex-col items-end">
+          <span class="text-[10px] text-gray-500 font-bold uppercase">Fees</span>
+          <span class="text-gray-400 font-medium text-xs"><span id="slipFeeValue">$2.50</span></span>
+        </div>
+      </div>
+      
+      <div class="flex justify-between items-center bg-background-dark/40 border border-border-dark rounded-lg px-3 py-2">
+        <span class="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Total Payable</span>
+        <span class="text-white font-mono font-bold text-sm" id="slipTotalPayableValue">$52.50</span>
+      </div>
+    <button class="w-full h-11 bg-primary hover:bg-red-700 text-white font-bold text-sm rounded shadow-[0_4px_14px_0_rgba(236,19,30,0.39)] transition-all uppercase tracking-wide transform active:scale-[0.98] flex items-center justify-center" id="slipCreateOrderBtn">
+        Create Order
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>
